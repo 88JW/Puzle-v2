@@ -56,13 +56,14 @@ const Controls = () => {
 
   const handleStartGame = () => {
     if (!isGameStarted) {
-      dispatch(shufflePieces());
       dispatch(startGame());
+      dispatch(shufflePieces());
       setIsPaused(false);
     } else {
+      dispatch(resetGame());
       dispatch(resetPieces());
-      dispatch(shufflePieces());
       dispatch(startGame());
+      dispatch(shufflePieces());
       setIsPaused(false);
     }
   };
