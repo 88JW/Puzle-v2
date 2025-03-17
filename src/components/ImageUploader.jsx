@@ -26,6 +26,7 @@ const ImageUploader = () => {
     reader.onload = (event) => {
       const imageUrl = event.target.result;
       setPreview(imageUrl);
+      console.log('Image loaded:', imageUrl);
       
       // Dispatch the image URL to Redux store
       dispatch(loadImage(imageUrl));
@@ -33,14 +34,39 @@ const ImageUploader = () => {
       // Get image dimensions
       const img = new Image();
       img.onload = () => {
+        console.log('Original image dimensions:', img.width, img.height);
+        
+        // Resize image if it's too large
+        const maxDimension = 1000;
+        let { width, height } = img;
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = Math.floor((height / width) * maxDimension);
+            width = maxDimension;
+          } else {
+            width = Math.floor((width / height) * maxDimension);
+            height = maxDimension;
+          }
+        }
+
+        console.log('Resized image dimensions:', width, height);
+
+        // Create a canvas to resize the image
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        const resizedImageUrl = canvas.toDataURL();
+
         // Set image dimensions
         dispatch(setDimensions({
-          width: img.width,
-          height: img.height
+          width,
+          height
         }));
         
-        // Create puzzle pieces based on the image
-        createPuzzlePieces(imageUrl, img.width, img.height);
+        // Create puzzle pieces based on the resized image
+        createPuzzlePieces(resizedImageUrl, width, height);
       };
       img.src = imageUrl;
     };
@@ -53,27 +79,44 @@ const ImageUploader = () => {
   };
 
   const createPuzzlePieces = (imageUrl, width, height) => {
-    const pieceSize = 100; // 100x100 pixels
+    console.log('Creating puzzle pieces...');
+    let gridSize;
+    switch (difficulty) {
+      case 'easy':
+        gridSize = 3;
+        break;
+      case 'medium':
+        gridSize = 4;
+        break;
+      case 'hard':
+        gridSize = 5;
+        break;
+      default:
+        gridSize = 4;
+    }
+
+    const pieceWidth = width / gridSize;
+    const pieceHeight = height / gridSize;
     const pieces = [];
-    const gridSizeX = Math.floor(width / pieceSize);
-    const gridSizeY = Math.floor(height / pieceSize);
     
-    for (let row = 0; row < gridSizeY; row++) {
-      for (let col = 0; col < gridSizeX; col++) {
-        const id = row * gridSizeX + col;
+    for (let row = 0; row < gridSize; row++) {
+      for (let col = 0; col < gridSize; col++) {
+        const id = row * gridSize + col;
         pieces.push({
           id,
           imageUrl,
           correctPosition: id,
           currentPosition: id,
-          width: pieceSize,
-          height: pieceSize,
-          x: col * pieceSize,
-          y: row * pieceSize
+          width: pieceWidth,
+          height: pieceHeight,
+          x: col * pieceWidth,
+          y: row * pieceHeight
         });
+        console.log(`Piece ${id}: x=${col * pieceWidth}, y=${row * pieceHeight}, width=${pieceWidth}, height=${pieceHeight}`);
       }
     }
     
+    console.log('Puzzle pieces created:', pieces);
     dispatch(setPieces(pieces));
   };
 

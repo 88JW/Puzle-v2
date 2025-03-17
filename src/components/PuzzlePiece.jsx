@@ -26,14 +26,14 @@ const PuzzlePiece = ({ piece, index, movePiece }) => {
       className="puzzle-piece border border-gray-300"
       style={{
         opacity: isDragging ? 0.5 : 1,
-        width: '100px',
-        height: '100px',
+        width: `${piece.width}px`,
+        height: `${piece.height}px`,
         backgroundImage: `url(${piece.imageUrl})`,
         backgroundPosition: `-${piece.x}px -${piece.y}px`,
-        backgroundSize: `${piece.width * 3}px ${piece.height * 3}px`, // Adjust based on grid size
+        backgroundSize: `${piece.width * 4}px ${piece.height * 4}px`, // Adjust based on grid size
       }}
     >
-
+      {/* Możesz dodać dodatkowe style lub elementy tutaj */}
     </div>
   );
 };

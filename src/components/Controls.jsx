@@ -40,14 +40,17 @@ const Controls = () => {
   };
   
   const handleShuffle = () => {
+    console.log('Shuffling pieces...');
     dispatch(shufflePieces());
     if (!isGameStarted) {
+      console.log('Starting game...');
       dispatch(startGame());
       setIsPaused(false);
     }
   };
 
   const handleReset = () => {
+    console.log('Resetting pieces and game...');
     dispatch(resetPieces());
     dispatch(resetGame());
     setElapsedTime(0);
@@ -55,11 +58,14 @@ const Controls = () => {
   };
 
   const handleStartGame = () => {
+    console.log('Handling start game...');
     if (!isGameStarted) {
+      console.log('Starting game...');
       dispatch(startGame());
       dispatch(shufflePieces());
       setIsPaused(false);
     } else {
+      console.log('Resetting and starting game...');
       dispatch(resetGame());
       dispatch(resetPieces());
       dispatch(startGame());
