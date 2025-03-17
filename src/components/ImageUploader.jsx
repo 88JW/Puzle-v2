@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadImage, setDimensions } from '../redux/imageSlice';
 import { setPieces } from '../redux/puzzleSlice';
@@ -9,6 +9,18 @@ const ImageUploader = () => {
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState(null);
   const difficulty = useSelector(state => state.game.difficulty);
+  const imageUrl = useSelector(state => state.image.url);
+
+  useEffect(() => {
+    if (imageUrl) {
+      const img = new Image();
+      img.onload = () => {
+        const { width, height } = img;
+        createPuzzlePieces(imageUrl, width, height);
+      };
+      img.src = imageUrl;
+    }
+  }, [difficulty, imageUrl]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -95,8 +107,8 @@ const ImageUploader = () => {
         gridSize = 4;
     }
 
-    const pieceWidth = width / gridSize;
-    const pieceHeight = height / gridSize;
+    const pieceWidth = 100; // Fixed width
+    const pieceHeight = 100; // Fixed height
     const pieces = [];
     
     for (let row = 0; row < gridSize; row++) {

@@ -33,9 +33,9 @@ const PuzzleContainer = () => {
   }
 
   return (
-    <div className="puzzle-container" style={{ display: 'grid', gridTemplateColumns: `repeat(${gridSize}, 1fr)`, gap: '1px', padding: '5px', backgroundColor: '#ccc', borderRadius: '10px' }}>
+    <div className="puzzle-container" style={{ display: 'grid', gridTemplateColumns: `repeat(${gridSize}, 100px)`, gap: '1px', padding: '5px', backgroundColor: '#ccc', borderRadius: '10px', maxWidth: '100%' }}>
       {pieces.map((piece, index) => (
-        <PuzzlePiece key={piece.id} piece={piece} index={index} movePiece={movePiece} />
+        <PuzzlePiece key={piece.id} piece={{ ...piece, gridSize }} index={index} movePiece={movePiece} />
       ))}
     </div>
   );
