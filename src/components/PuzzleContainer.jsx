@@ -2,19 +2,16 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PuzzlePiece from './PuzzlePiece';
 import { incrementMoves } from '../redux/gameSlice';
-import { checkSolved } from '../redux/puzzleSlice';
+import { movePiece } from '../redux/puzzleSlice';
 
 const PuzzleContainer = () => {
   const dispatch = useDispatch();
   const pieces = useSelector((state) => state.puzzle.pieces);
   const difficulty = useSelector((state) => state.game.difficulty);
 
-  const movePiece = (fromIndex, toIndex) => {
-    const newPieces = [...pieces];
-    [newPieces[fromIndex], newPieces[toIndex]] = [newPieces[toIndex], newPieces[fromIndex]];
-    dispatch({ type: 'puzzle/setPieces', payload: newPieces });
+  const handleMovePiece = (fromIndex, toIndex) => {
+    dispatch(movePiece({ fromIndex, toIndex }));
     dispatch(incrementMoves());
-    dispatch(checkSolved());
   };
 
   let gridSize;
@@ -33,10 +30,12 @@ const PuzzleContainer = () => {
   }
 
   return (
-    <div className="puzzle-container" style={{ display: 'grid', gridTemplateColumns: `repeat(${gridSize}, 100px)`, gap: '1px', padding: '5px', backgroundColor: '#ccc', borderRadius: '10px', maxWidth: '100%' }}>
-      {pieces.map((piece, index) => (
-        <PuzzlePiece key={piece.id} piece={{ ...piece, gridSize }} index={index} movePiece={movePiece} />
-      ))}
+    <div className="flex justify-center items-center h-full">
+      <div className="puzzle-container" style={{ display: 'grid', gridTemplateColumns: `repeat(${gridSize}, 100px)`, gap: '1px', padding: '5px', backgroundColor: '#ccc', borderRadius: '10px', maxWidth: '100%' }}>
+        {pieces.map((piece, index) => (
+          <PuzzlePiece key={piece.id} piece={{ ...piece, gridSize }} index={index} movePiece={handleMovePiece} />
+        ))}
+      </div>
     </div>
   );
 };

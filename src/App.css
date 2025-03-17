@@ -26,5 +26,21 @@
   height: 100px;
 }
 
+.flex {
+  display: flex;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.h-full {
+  height: 100%;
+}
+
 /* Custom styles that complement Tailwind classes can go here */
 /* Most styling will now come from Tailwind utility classes */

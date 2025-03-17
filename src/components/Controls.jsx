@@ -11,6 +11,7 @@ const Controls = () => {
   const startTime = useSelector(state => state.game?.startTime);
   const endTime = useSelector(state => state.game?.endTime);
   const moves = useSelector(state => state.game?.moves || 0);
+  const isSolved = useSelector(state => state.puzzle.isSolved);
   
   // State for the timer
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -20,7 +21,7 @@ const Controls = () => {
   useEffect(() => {
     let timerInterval;
     
-    if (isGameStarted && !isPaused) {
+    if (isGameStarted && !isPaused && !isSolved) {
       timerInterval = setInterval(() => {
         const elapsed = Math.floor((Date.now() - startTime) / 1000);
         setElapsedTime(elapsed);
@@ -30,7 +31,7 @@ const Controls = () => {
     return () => {
       if (timerInterval) clearInterval(timerInterval);
     };
-  }, [isGameStarted, isPaused, startTime]);
+  }, [isGameStarted, isPaused, startTime, isSolved]);
   
   // Format time as MM:SS
   const formatTime = (seconds) => {
@@ -201,6 +202,7 @@ const Controls = () => {
           {isGameStarted ? 'Restart Game' : 'Start Game'}
         </button>
       </div>
+      {isSolved && <div className="text-green-500 font-bold mt-4">Congratulations! You solved the puzzle!</div>}
     </div>
   );
 };
